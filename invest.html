@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Investment Form</title>
+  <style>
+    body { background:#0e0e0e; color:#eee; font-family:Arial; text-align:center; padding-top:50px;}
+    input, select { padding:10px; margin:10px; border-radius:5px; border:none; width:250px;}
+    button { padding:10px 20px; border:none; border-radius:8px; background:#16a085; color:white; cursor:pointer; }
+    button:hover { background:#1abc9c; }
+  </style>
+</head>
+<body>
+  <h2>💼 Investment Form</h2>
+  <form action="/submit_investment" method="POST">
+    <input type="text" name="name" placeholder="Your Name" required><br>
+    <select name="asset_type" required>
+      <option value="">Select Asset Type</option>
+      <option value="Gold">Gold</option>
+      <option value="Silver">Silver</option>
+    </select><br>
+    <input type="number" name="amount" placeholder="Investment Amount" required><br>
+    <button type="submit">Invest</button>
+  </form>
+</body>
+</html>

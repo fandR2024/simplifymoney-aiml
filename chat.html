@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis — AI Investment Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>💰 Jarvis — Your AI Investment Advisor</h1>
+
+    <div id="chat-box">
+        <div class="message bot">👋 Hello! I'm <b>Jarvis</b>, your personal investment assistant. How can I help you today?</div>
+    </div>
+
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="Type your message..." />
+        <button id="send-btn">Send</button>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("user-input");
+        const sendBtn = document.getElementById("send-btn");
+
+        // Send message to backend
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            const userDiv = document.createElement("div");
+            userDiv.classList.add("message", "user");
+            userDiv.textContent = "You: " + message;
+            chatBox.appendChild(userDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            userInput.value = "";
+
+            try {
+                const res = await fetch("/get", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await res.json();
+                const reply = data.reply;
+
+                // Add Jarvis reply
+                const botDiv = document.createElement("div");
+                botDiv.classList.add("message", "bot");
+                botDiv.textContent = "Jarvis: " + reply.replace("[INVEST_NOW]", "");
+                chatBox.appendChild(botDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                // Redirect to invest page if keyword is found
+                if (reply.includes("[INVEST_NOW]")) {
+                    setTimeout(() => {
+                        window.location.href = "/invest";
+                    }, 2000);
+                }
+
+            } catch (err) {
+                const botDiv = document.createElement("div");
+                botDiv.classList.add("message", "bot");
+                botDiv.textContent = "⚠️ Sorry, something went wrong connecting to Jarvis.";
+                chatBox.appendChild(botDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        // Press Enter to send
+        userInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Send button
+        sendBtn.addEventListener("click", sendMessage);
+    </script>
+</body>
+</html>
